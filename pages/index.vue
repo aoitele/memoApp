@@ -2,15 +2,16 @@
   <section
     class="container"
     @mousemove="onMousemove"
-    @mouseup="onMouseup">
+    @mouseup="onMouseup" >
     <memo
-      v-for="(position, index) in memoPositions"
+      v-for="(mm, index) in $store.state.memoList"
       :key="index"
-      :toppo="position.toppo"
-      :left="position.left"
+      :toppo="mm.toppo"
+      :left="mm.left"
+      :index="index"
       @dragStart="onDragStart($event, index)"
-      @minus="minusMemo"/>
-    <plus-btn @plus="plusMemo"/>
+      @minus="minusMemo" />
+    <plus-btn @plus="plusMemo" />
   </section>
 </template>
 
@@ -27,21 +28,18 @@ export default {
     return {
       draggingIndex: null,
       prevX: null,
-      prevY: null,
-      memoPositions: []
+      prevY: null
     }
   },
   methods: {
     plusMemo() {
       const widthCount = Math.floor(window.innerWidth / 250)
 
-      this.memoPositions = [
-        ...this.memoPositions,
-        {
-          toppo: Math.floor(this.memoPositions.length / widthCount) * 350,
-          left: (this.memoPositions.length % widthCount) * 250
-        }
-      ]
+      this.$store.commit('addMemo', {
+        toppo: Math.floor(this.$store.state.memoList.length / widthCount) * 350,
+        left: (this.$store.state.memoList.length % widthCount) * 250,
+        text: ''
+      })
     },
     minusMemo(index) {
       this.memoPositions = [...this.memoPositions]
