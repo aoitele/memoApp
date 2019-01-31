@@ -2,7 +2,8 @@
   <section
     class="container"
     @mousemove="onMousemove"
-    @mouseup="onMouseup" >
+    @mouseup="onMouseup"
+  >
     <memo
       v-for="(mm, index) in $store.state.memoList"
       :key="index"
@@ -10,7 +11,8 @@
       :left="mm.left"
       :index="index"
       @dragStart="onDragStart($event, index)"
-      @minus="minusMemo" />
+      @minus="minusMemo"
+    />
     <plus-btn @plus="plusMemo" />
   </section>
 </template>
@@ -47,26 +49,28 @@ export default {
     },
     onDragStart({ x, y }, index) {
       this.draggingIndex = index
+      this.memoPositions = [ ...this.$store.state.memoList ]
       this.prevX = x
       this.prevY = y
     },
     onMousemove(e) {
       if (this.draggingIndex === null) return
-
       const x = e.pageX
       const y = e.pageY
-      const target = { ...this.memoPositions[this.draggingIndex] }
-      target.left += x - this.prevX
-      target.toppo += y - this.prevY
-
-      this.memoPositions = [...this.memoPositions]
-      this.memoPositions[this.draggingIndex] = target
-
-      this.prevX = x
-      this.prevY = y
+      this.target = { ...this.memoPositions[this.draggingIndex] }
+      this.target.left += x - this.prevX
+      this.target.toppo += y - this.prevY
+      this.memoInfo = {
+        toppo: this.target.toppo,
+        left: this.target.left,
+        index: this.draggingIndex
+      }
+      this.$store.commit('moveMemo', this.memoInfo)
     },
     onMouseup() {
       this.draggingIndex = null
+      this.prevX = this.x
+      this.prevY = this.y
     }
   }
 }
@@ -80,7 +84,8 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: url('../assets/renga.jpg');
+  background: url('../assets/nature.jpg');
+  background-size: 100%;
   user-select: none;
 }
 

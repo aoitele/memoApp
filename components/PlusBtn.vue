@@ -1,7 +1,8 @@
 <template>
   <div
     class="btn"
-    @click="$emit('plus')">
+    @click="$emit('plus')"
+  >
     <span>+</span>
   </div>
 </template>

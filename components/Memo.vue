@@ -4,16 +4,20 @@
     :style="{
       top: `${toppo}px`,
       left: `${left}px`
-    }">
+    }"
+  >
     <div class="handle" @mousedown="onMousedown" />
-    <editor :index="index" />
+    <!-- <editor :index="index" /> -->
   </div>
 </template>
 
 <script>
-import Editor from '~/components/Editor'
+// import Editor from '~/components/Editor.vue'
 
 export default {
+  components: {
+    // Editor
+  },
   props: {
     toppo: {
       type: Number,
@@ -23,9 +27,6 @@ export default {
       type: Number,
       default: 0
     }
-  },
-  components: {
-    Editor
   },
   index: {
     type: Number,
@@ -38,6 +39,18 @@ export default {
         x: e.pageX,
         y: e.pageY
       })
+    },
+    onMousemove(e) {
+      this.$emit('dragging', {
+        x: e.pageX,
+        y: e.pageY
+      })
+    },
+    onMouseup(e) {
+      this.$emit('dragEnd', {
+        x: e.pageX,
+        y: e.pageY
+      })
     }
   }
 }
@@ -46,7 +59,7 @@ export default {
 <style>
 .memo {
   position: fixed;
-  background: #f00;
+  background: #fff;
   width: 200px;
   height: 300px;
 }
@@ -57,7 +70,7 @@ export default {
   left:0;
   right: 0;
   height: 50px;
-  background: #900;
+  background: rgb(220, 87, 87);
   cursor:  move;
 }
 
