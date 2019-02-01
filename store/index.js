@@ -30,6 +30,10 @@ export const mutations = {
     state.memoList = [...state.memoList]
     state.memoList[index] = { toppo, left }
   },
+  minusMemo(state, index) {
+    state.memoList = [...state.memoList]
+    state.memoList.splice(index, 1)
+  },
   updateText(state, { index, text }) {
     state.memoList = [...state.memoList]
     state.memoList[index] = {

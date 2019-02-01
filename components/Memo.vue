@@ -6,17 +6,26 @@
       left: `${left}px`
     }"
   >
-    <div class="handle" @mousedown="onMousedown" />
-    <!-- <editor :index="index" /> -->
+    <div class="memoBody">
+      <div class="arm-left" />
+      <div class="arm-right" />
+      <div class="handle" @mousedown="onMousedown" />
+      <div class="minusMemo" @mousedown="minusMemo">
+        <span @click="$emit('minus')">
+          -
+        </span>
+      </div>
+    </div>
+    <editor :index="index" />
   </div>
 </template>
 
 <script>
-// import Editor from '~/components/Editor.vue'
+import Editor from '~/components/Editor.vue'
 
 export default {
   components: {
-    // Editor
+    Editor
   },
   props: {
     toppo: {
@@ -26,13 +35,12 @@ export default {
     left: {
       type: Number,
       default: 0
+    },
+    index: {
+      type: Number,
+      default: 0
     }
   },
-  index: {
-    type: Number,
-    default: 0
-  },
-
   methods: {
     onMousedown(e) {
       this.$emit('dragStart', {
@@ -51,6 +59,11 @@ export default {
         x: e.pageX,
         y: e.pageY
       })
+    },
+    minusMemo(index) {
+      this.$emit('minusMemo', {
+        index
+      })
     }
   }
 }
@@ -62,6 +75,8 @@ export default {
   background: #fff;
   width: 200px;
   height: 300px;
+  animation : scrollSample01 1s linear infinite;
+
 }
 
 .handle{
@@ -74,4 +89,35 @@ export default {
   cursor:  move;
 }
 
+.minusMemo{
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 30px;
+  width: 50px;
+}
+.arm-left{
+  position: absolute;
+  top: 45px;
+  left: -50px;
+  width: 150px;
+  height:70px;
+  background: #fff;
+  z-index: -1;
+  transform:rotate(-20deg)
+}
+.arm-right{
+  position: absolute;
+  top: 45px;
+  left: 100px;
+  width: 150px;
+  height: 70px;
+  background: #fff;
+  z-index: -1;
+  transform:rotate(20deg)
+}
+@keyframes scrollSample01{
+  0% { transform: translateY(0)}
+  100% { transform: translateY(30)}
+}
 </style>

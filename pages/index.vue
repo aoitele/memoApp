@@ -11,7 +11,8 @@
       :left="mm.left"
       :index="index"
       @dragStart="onDragStart($event, index)"
-      @minus="minusMemo"
+      @minus="minusMemo(index)"
+      @edit="editMemo(text)"
     />
     <plus-btn @plus="plusMemo" />
   </section>
@@ -44,8 +45,7 @@ export default {
       })
     },
     minusMemo(index) {
-      this.memoPositions = [...this.memoPositions]
-      this.memoPositions.splice(index, 1)
+      this.$store.commit('minusMemo', index)
     },
     onDragStart({ x, y }, index) {
       this.draggingIndex = index
@@ -60,17 +60,21 @@ export default {
       this.target = { ...this.memoPositions[this.draggingIndex] }
       this.target.left += x - this.prevX
       this.target.toppo += y - this.prevY
-      this.memoInfo = {
+      this.$store.commit('moveMemo', {
         toppo: this.target.toppo,
         left: this.target.left,
         index: this.draggingIndex
-      }
-      this.$store.commit('moveMemo', this.memoInfo)
+      })
     },
     onMouseup() {
       this.draggingIndex = null
       this.prevX = this.x
       this.prevY = this.y
+    },
+    editMemo() {
+      this.store.commit('editMemo', {
+        text: this.target.text
+      })
     }
   }
 }
@@ -84,7 +88,7 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: url('../assets/nature.jpg');
+  background: url('../assets/nature4.png');
   background-size: 100%;
   user-select: none;
 }

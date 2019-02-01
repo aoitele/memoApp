@@ -21,8 +21,8 @@ export default {
   border-radius: 50%;
   background: #fff;
   border: #666 2px solid;
-  width: 60px;
-  height: 60px;
+  width: 200px;
+  height: 200px;
   text-align: center;
   cursor: pointer;
   transition: 0.2s;
@@ -33,8 +33,8 @@ export default {
 }
 
 .btn > span {
-  font-size: 50px;
+  font-size: 200px;
   display: inline-block;
-  margin-top: -10px;
+  margin-top: -40px;
 }
 </style>
