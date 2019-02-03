@@ -15,8 +15,8 @@
           -
         </span>
       </div>
+      <editor :index="index" />
     </div>
-    <editor :index="index" />
   </div>
 </template>
 
@@ -76,7 +76,11 @@ export default {
   width: 200px;
   height: 300px;
   animation : scrollSample01 1s linear infinite;
-
+}
+@keyframes scrollSample01{
+  0% { transform: translateX(0)}
+  50% { transform: translateY(-5%)}
+  100% { transform: translateY(5%)}
 }
 
 .handle{
@@ -115,9 +119,5 @@ export default {
   background: #fff;
   z-index: -1;
   transform:rotate(20deg)
-}
-@keyframes scrollSample01{
-  0% { transform: translateY(0)}
-  100% { transform: translateY(30)}
 }
 </style>

@@ -4,34 +4,50 @@
     @mousemove="onMousemove"
     @mouseup="onMouseup"
   >
-    <memo
-      v-for="(mm, index) in $store.state.memoList"
-      :key="index"
-      :toppo="mm.toppo"
-      :left="mm.left"
-      :index="index"
-      @dragStart="onDragStart($event, index)"
-      @minus="minusMemo(index)"
-      @edit="editMemo(text)"
-    />
-    <plus-btn @plus="plusMemo" />
+    <div
+      class="weatherStatus"
+      :class="weather.weather"
+    >
+      <weather
+        @sunny="changeWeather('sunny')"
+        @night="changeWeather('night')"
+        @snow="changeWeather('snow')"
+      />
+
+      <memo
+        v-for="(mm, index) in $store.state.memoList"
+        :key="index"
+        :toppo="mm.toppo"
+        :left="mm.left"
+        :index="index"
+        @dragStart="onDragStart($event, index)"
+        @minus="minusMemo(index)"
+        @edit="editMemo(text)"
+      />
+      <plus-btn @plus="plusMemo" />
+    </div>
   </section>
 </template>
 
 <script>
 import Memo from '~/components/Memo.vue'
 import PlusBtn from '~/components/PlusBtn.vue'
+import Weather from '~/components/Weather.vue'
 
 export default {
   components: {
     Memo,
-    PlusBtn
+    PlusBtn,
+    Weather
   },
   data() {
     return {
       draggingIndex: null,
       prevX: null,
-      prevY: null
+      prevY: null,
+      weather: {
+        weather: 'sunny'
+      }
     }
   },
   methods: {
@@ -75,6 +91,9 @@ export default {
       this.store.commit('editMemo', {
         text: this.target.text
       })
+    },
+    changeWeather(weather) {
+      this.weather = { ...this.weather, weather }
     }
   }
 }
@@ -83,14 +102,26 @@ export default {
 <style>
 .container {
   margin: 0 auto;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: url('../assets/nature4.png');
-  background-size: 100%;
   user-select: none;
+}
+.weatherStatus {
+  width: 100%;
+  min-height: 100vh;
+  background-size: cover;
+}
+
+.weatherStatus.sunny {
+  background-image: url("../assets/sunny.png");
+}
+.weatherStatus.night {
+  background-image: url("../assets/night.png");
+}
+.weatherStatus.snow {
+  background-image: url("../assets/snow.png");
 }
 
 .title {
