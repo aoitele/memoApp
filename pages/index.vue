@@ -6,14 +6,17 @@
   >
     <div
       class="weatherStatus"
-      :class="weather.weather"
+      :class="weather.status"
     >
       <weather
         @sunny="changeWeather('sunny')"
         @night="changeWeather('night')"
         @snow="changeWeather('snow')"
       />
-
+      <effect
+        @humbarger="effect('humbarger')"
+        @tea="effect('tea')"
+      />
       <memo
         v-for="(mm, index) in $store.state.memoList"
         :key="index"
@@ -23,6 +26,7 @@
         @dragStart="onDragStart($event, index)"
         @minus="minusMemo(index)"
         @edit="editMemo(text)"
+        @color="colorChange($event, index)"
       />
       <plus-btn @plus="plusMemo" />
     </div>
@@ -33,12 +37,17 @@
 import Memo from '~/components/Memo.vue'
 import PlusBtn from '~/components/PlusBtn.vue'
 import Weather from '~/components/Weather.vue'
+import Effect from '~/components/Effect.vue'
 
 export default {
   components: {
     Memo,
     PlusBtn,
-    Weather
+    Weather,
+    Effect
+  },
+  fetch({ store }) {
+    return store.dispatch('getMemoList')
   },
   data() {
     return {
@@ -46,22 +55,30 @@ export default {
       prevX: null,
       prevY: null,
       weather: {
-        weather: 'sunny'
+        status: 'sunny'
       }
     }
+  },
+  mounted() {
+    this.canselId = setInterval(() => {
+      this.$store.dispatch('getMemoList')
+    }, 100)
   },
   methods: {
     plusMemo() {
       const widthCount = Math.floor(window.innerWidth / 250)
-
-      this.$store.commit('addMemo', {
-        toppo: Math.floor(this.$store.state.memoList.length / widthCount) * 350,
-        left: (this.$store.state.memoList.length % widthCount) * 250,
-        text: ''
-      })
+      return this.$store.dispatch('postMemo', [
+        ...this.$store.state.memoList,
+        {
+          toppo: Math.floor(this.$store.state.memoList.length / widthCount) * 350,
+          left: (this.$store.state.memoList.length % widthCount) * 250,
+          text: '',
+          color: 0
+        }
+      ])
     },
     minusMemo(index) {
-      this.$store.commit('minusMemo', index)
+      return this.$store.dispatch('minusMemo', index)
     },
     onDragStart({ x, y }, index) {
       this.draggingIndex = index
@@ -76,10 +93,12 @@ export default {
       this.target = { ...this.memoPositions[this.draggingIndex] }
       this.target.left += x - this.prevX
       this.target.toppo += y - this.prevY
-      this.$store.commit('moveMemo', {
+      return this.$store.dispatch('moveMemo', {
         toppo: this.target.toppo,
         left: this.target.left,
-        index: this.draggingIndex
+        index: this.draggingIndex,
+        text: this.target.text,
+        background: this.target.background
       })
     },
     onMouseup() {
@@ -87,13 +106,14 @@ export default {
       this.prevX = this.x
       this.prevY = this.y
     },
-    editMemo() {
-      this.store.commit('editMemo', {
-        text: this.target.text
+    colorChange(color, index) {
+      return this.$store.dispatch('colorChange', {
+        index,
+        color
       })
     },
-    changeWeather(weather) {
-      this.weather = { ...this.weather, weather }
+    changeWeather(status) {
+      this.weather = { ...this.weather, status }
     }
   }
 }

@@ -30,7 +30,7 @@
   position: absolute;
   font-size: 300px;
   top: 90px;
-  right: 90px;
+  right: 800px;
   text-align: center;
   cursor: pointer;
   transition: 0.2s;

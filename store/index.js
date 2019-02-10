@@ -1,12 +1,13 @@
-const STRAGAGE_NAME = 'vuex_data'
-const storageData = localStorage.getItem(STRAGAGE_NAME)
-
-export const state = () =>
-  storageData
-    ? JSON.parse(storageData)
-    : {
-      memoList: []
+export const state = () => ({
+  memoList: [
+    {
+      toppo: null,
+      left: null,
+      text: null,
+      color: null
     }
+  ]
+})
 
 export const getters = {
   memoData(state) {
@@ -14,31 +15,43 @@ export const getters = {
   }
 }
 
-export const plugins = [
-  (store) => {
-    store.subscribe(() => {
-      localStorage.setItem(STRAGAGE_NAME, JSON.stringify(store.state))
-    })
-  }
-]
+export const plugins = []
 
 export const mutations = {
-  addMemo(state, memo) {
-    state.memoList = [...state.memoList, memo]
+  setMemoList(state, memoList) {
+    state.memoList = memoList
+  }
+}
+
+export const actions = {
+  async getMemoList(store) {
+    const memoList = await this.$axios.$get('/data')
+    store.commit('setMemoList', memoList)
   },
-  moveMemo(state, { toppo, left, index }) {
-    state.memoList = [...state.memoList]
-    state.memoList[index] = { toppo, left }
+  async postMemo(store, memoList) {
+    await this.$axios.$post('/data', memoList)
+    store.commit('setMemoList', memoList)
   },
-  minusMemo(state, index) {
-    state.memoList = [...state.memoList]
-    state.memoList.splice(index, 1)
+  async minusMemo(store, index) {
+    const memoList = await this.$axios.$post('/delete', { index })
+    store.commit('setMemoList', memoList)
   },
-  updateText(state, { index, text }) {
-    state.memoList = [...state.memoList]
-    state.memoList[index] = {
-      ...state.memoList[index],
-      text
-    }
+  async moveMemo(store, { toppo, left, index, text, background }) {
+    const memoList = await this.$axios.$post('/move', {
+      toppo,
+      left,
+      index,
+      text,
+      background
+    })
+    store.commit('setMemoList', memoList)
+  },
+  async updateText(store, { index, text }) {
+    const memoList = await this.$axios.$post('/text', { index, text })
+    store.commit('setMemoList', memoList)
+  },
+  async colorChange(store, { index, color }) {
+    const memoList = await this.$axios.$post('/color', { index, color })
+    store.commit('setMemoList', memoList)
   }
 }

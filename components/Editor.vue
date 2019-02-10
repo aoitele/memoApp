@@ -2,7 +2,7 @@
   <textarea
     class="editor"
     :value="$store.state.memoList[index].text"
-    @input="$store.commit('updateText', { index, text:$event.target.value })"
+    @input="$store.dispatch('updateText', {index, text:$event.target.value })"
   />
 </template>
 <script>
@@ -11,14 +11,6 @@ export default {
     index: {
       type: Number,
       default: 0
-    }
-  },
-  methods: {
-    onInput(e) {
-      this.$store.commit('updateText', {
-        index: this.index,
-        text: e.target.value
-      })
     }
   }
 }
@@ -35,6 +27,7 @@ export default {
   padding: 15px;
   font-size: 20px;
   resize: none;
+  background: transparent;
 }
 
 </style>
